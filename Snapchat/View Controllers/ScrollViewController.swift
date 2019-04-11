@@ -28,6 +28,11 @@
 
 import UIKit
 
+protocol ScrollViewControllerDelegate: class {
+    var viewControllers: [UIViewController?] { get }
+    var initialViewController: UIViewController { get }
+}
+
 class ScrollViewController: UIViewController {
   
   // MARK: - Properties
@@ -40,6 +45,7 @@ class ScrollViewController: UIViewController {
   }
   
   var viewControllers: [UIViewController?]!
+    weak var delegate: ScrollViewControllerDelegate?
   
   // MARK: - View Life Cycle
   override func loadView() {
@@ -55,6 +61,23 @@ class ScrollViewController: UIViewController {
   
   override func viewDidAppear(_ animated: Bool) {
     super.viewDidAppear(animated)
+    
+    viewControllers = delegate?.viewControllers
+    
+    for (index, controller) in viewControllers.enumerated() {
+        if let controller = controller {
+            addChild(controller)
+            controller.view.frame = frame(for: index)
+            scrollView.addSubview(controller.view)
+            controller.didMove(toParent: self)
+        }
+    }
+    
+    scrollView.contentSize = CGSize(width: pageSize.width * CGFloat(viewControllers.count), height: pageSize.height)
+    
+    if let controller = delegate?.initialViewController {
+        setController(to: controller, animated: true)
+    }
   }
 }
 
@@ -77,3 +100,11 @@ fileprivate extension ScrollViewController {
 // MARK: - Scroll View Delegate
 extension ScrollViewController: UIScrollViewDelegate { }
 
+extension ScrollViewController {
+    public func setController(to controller: UIViewController, animated: Bool) {
+        guard let index = indexFor(controller: controller) else { return }
+        
+        let contentOffset = CGPoint(x: pageSize.width * CGFloat(index), y: 0)
+        scrollView.setContentOffset(contentOffset, animated: animated)
+    }
+}

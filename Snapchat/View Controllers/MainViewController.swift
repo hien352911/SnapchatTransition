@@ -64,6 +64,7 @@ class MainViewController: UIViewController {
       cameraViewController = controller
     } else if let controller = segue.destination as? ScrollViewController {
       scrollViewController = controller
+        scrollViewController.delegate = self
     }
   }
 }
@@ -72,15 +73,24 @@ class MainViewController: UIViewController {
 extension MainViewController {
   
   @IBAction func handleChatIconTap(_ sender: UITapGestureRecognizer) {
-    print("Chat!")
+    scrollViewController.setController(to: chatViewController, animated: true)
   }
   
   @IBAction func handleDiscoverIconTap(_ sender: UITapGestureRecognizer) {
-    print("Discover!")
+    scrollViewController.setController(to: discoverViewController, animated: true)
   }
   
   @IBAction func handleCameraButton(_ sender: UITapGestureRecognizer) {
-    print("Snap, snap!")
+    scrollViewController.setController(to: lensViewController, animated: true)
   }
 }
 
+extension MainViewController: ScrollViewControllerDelegate {
+    var viewControllers: [UIViewController?] {
+        return [chatViewController, lensViewController, discoverViewController]
+    }
+    
+    var initialViewController: UIViewController {
+        return lensViewController
+    }
+}
