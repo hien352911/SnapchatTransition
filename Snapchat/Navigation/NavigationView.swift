@@ -130,7 +130,9 @@ class NavigationView: UIView {
             colorView.backgroundColor = controller.controllerColor
         }
         
-        colorView.alpha = offset
+        var colorOffset = (offset - 0.2) / (0.8 - 0.2)
+        colorOffset = min(max(colorOffset, 0), 1)
+        colorView.alpha = colorOffset
         
         layoutIfNeeded()
     }
