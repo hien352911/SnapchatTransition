@@ -105,5 +105,12 @@ class NavigationView: UIView {
     super.prepareForInterfaceBuilder()
     setup()
   }
+    
+    // let touches through except for buttons
+    // Buttons have tap gestures on them
+    override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
+        let view = super.hitTest(point, with: event)
+        return view == self ? nil : view
+    }
 }
 
