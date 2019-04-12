@@ -113,4 +113,16 @@ extension ScrollViewController {
         let contentOffset = CGPoint(x: pageSize.width * CGFloat(index), y: 0)
         scrollView.setContentOffset(contentOffset, animated: animated)
     }
+    
+    public func isControllerVisible(_ controller: UIViewController?) -> Bool {
+        guard controller != nil else { return false }
+        for i in 0..<viewControllers.count {
+            if viewControllers[i] == controller {
+                let controllerFrame = frame(for: i)
+                return controllerFrame.intersects(scrollView.bounds)
+            }
+        }
+        return false
+    }
+    
 }
