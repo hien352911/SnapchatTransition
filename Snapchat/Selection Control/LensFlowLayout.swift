@@ -28,10 +28,55 @@
 
 import UIKit
 
+let defaultItemScale: CGFloat = 0.7
+
 class LensFlowLayout: UICollectionViewFlowLayout {
   
   override func prepare() {
     super.prepare()
+    
+    scrollDirection = .horizontal
+    minimumLineSpacing = 0
   }
+    
+    override func layoutAttributesForElements(in rect: CGRect) -> [UICollectionViewLayoutAttributes]? {
+        let attributes = super.layoutAttributesForElements(in: rect)
+        var attributesCopy: [UICollectionViewLayoutAttributes] = []
+
+        for itemAttributes in attributes! {
+            let itemAttributesCopy = itemAttributes.copy() as! UICollectionViewLayoutAttributes
+
+            // TODO: Perform layout attributes change here
+            changeLayoutAttributes(itemAttributesCopy)
+            attributesCopy.append(itemAttributesCopy)
+        }
+
+        return attributesCopy
+    }
+
+    override func shouldInvalidateLayout(forBoundsChange newBounds: CGRect) -> Bool {
+        return true
+    }
+
+    private func changeLayoutAttributes(_ attributes: UICollectionViewLayoutAttributes) {
+        let collectionViewCenter = collectionView!.frame.size.width / 2
+        let offset = collectionView!.contentOffset.x
+        // Vì centerX của cell là giá trị ko đổi nên để tính khoảng cách giữa centerX của cell và centerX của collectionView thì centerX thực của cell khi scroll đc tính = centerX - offset
+        let normalizedCenter = attributes.center.x - offset
+        
+        let maxDistance = itemSize.width + minimumLineSpacing
+        // actualDistance: distance between centerX of cell and centerX of collectionView
+        let actualDistance = abs(collectionViewCenter - normalizedCenter)
+        
+        // scaleDistance: 0 -> maxDistance: 50
+        let scaleDistance = min(actualDistance, maxDistance)
+
+        // ratio: 0 -> 1
+        let ratio = (maxDistance - scaleDistance) / maxDistance
+        // scale: defaultItemScale: 0.7 -> 1
+        let scale = defaultItemScale + ratio * (1 - defaultItemScale)
+        
+        attributes.transform3D = CATransform3DScale(CATransform3DIdentity, scale, scale, 1)
+    }
 }
 

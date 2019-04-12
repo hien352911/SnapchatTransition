@@ -51,17 +51,27 @@ class LensViewController: UIViewController {
   }
 }
 
+extension LensViewController: UICollectionViewDelegateFlowLayout {
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        let side = lensCollectionView.frame.height * 0.9
+        return CGSize(width: side, height: side)
+    }
+}
+
 // MARK: UICollectionViewDelegate
 extension LensViewController: UICollectionViewDelegate {
   func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-    return 0
+    return lensFiltersImages.count
   }
 }
 
 // MARK: UICollectionViewDataSource
 extension LensViewController: UICollectionViewDataSource {
   func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-    return UICollectionViewCell()
+    guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: LensCircleCell.identifier, for: indexPath) as? LensCircleCell else { fatalError() }
+    
+    cell.image = lensFiltersImages[indexPath.row]
+    return cell
   }
 }
 
