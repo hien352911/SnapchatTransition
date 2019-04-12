@@ -31,6 +31,8 @@ import UIKit
 protocol ScrollViewControllerDelegate: class {
     var viewControllers: [UIViewController?] { get }
     var initialViewController: UIViewController { get }
+    
+    func scrollViewDidScroll()
 }
 
 class ScrollViewController: UIViewController {
@@ -98,7 +100,11 @@ fileprivate extension ScrollViewController {
 }
 
 // MARK: - Scroll View Delegate
-extension ScrollViewController: UIScrollViewDelegate { }
+extension ScrollViewController: UIScrollViewDelegate {
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        delegate?.scrollViewDidScroll()
+    }
+}
 
 extension ScrollViewController {
     public func setController(to controller: UIViewController, animated: Bool) {

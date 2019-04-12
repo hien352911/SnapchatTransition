@@ -112,5 +112,21 @@ class NavigationView: UIView {
         let view = super.hitTest(point, with: event)
         return view == self ? nil : view
     }
+    
+    func animate(to percent: CGFloat) {
+        let offset = abs(percent)
+        
+        cameraButtonWhiteView.alpha = 1 - offset
+        cameraButtonGrayView.alpha = offset
+        
+        animateIconColor(offset: offset)
+        animateIconPosition(offset: offset)
+        animateIconScale(offset: offset)
+        animateIconCenter(offset: offset)
+        
+        animateBottomBar(percent: percent)
+        
+        layoutIfNeeded()
+    }
 }
 

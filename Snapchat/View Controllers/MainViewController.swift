@@ -93,4 +93,13 @@ extension MainViewController: ScrollViewControllerDelegate {
     var initialViewController: UIViewController {
         return lensViewController
     }
+    
+    func scrollViewDidScroll() {
+        let min: CGFloat = 0
+        let max: CGFloat = scrollViewController.pageSize.width
+        let x = scrollViewController.scrollView.contentOffset.x
+        let result = ((x - min) / (max - min)) - 1
+
+        navigationView.animate(to: result)
+    }
 }
