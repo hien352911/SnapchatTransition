@@ -76,4 +76,29 @@ extension LensViewController: UICollectionViewDataSource {
 }
 
 // MARK: UIScrollViewDelegate
-extension LensViewController: UIScrollViewDelegate { }
+extension LensViewController: UIScrollViewDelegate {
+    func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
+        let bounds = lensCollectionView.bounds
+        
+        // CenterX of cell = bounds.origin.x(contentOffset.origin.x) + bounds.size.width / 2.0
+        let xPosition = bounds.origin.x + bounds.size.width / 2.0
+        let yPosition = bounds.size.height / 2.0
+        
+        let xyPosition = CGPoint(x: xPosition, y: yPosition)
+        
+        guard let indexPath = lensCollectionView.indexPathForItem(at: xyPosition) else { return }
+        
+        lensCollectionView.scrollToItem(at: indexPath, at: .centeredHorizontally, animated: true)
+        faceImage.image = lensFiltersImages[indexPath.row]
+    }
+    
+    func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
+        if !decelerate {
+            scrollViewDidEndDecelerating(scrollView)
+        }
+    }
+    
+    func scrollViewDidEndScrollingAnimation(_ scrollView: UIScrollView) {
+        scrollViewDidEndDecelerating(scrollView)
+    }
+}
