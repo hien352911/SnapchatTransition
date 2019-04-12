@@ -50,6 +50,12 @@ class LensViewController: UIViewController {
     lensCollectionView.register(LensCircleCell.self, forCellWithReuseIdentifier: LensCircleCell.identifier)
   }
     
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        let firstIndexPath = IndexPath(item: 0, section: 0)
+        lensCollectionView.scrollToItem(at: firstIndexPath, at: .centeredHorizontally, animated: true)
+    }
+    
     private func selectCell(for indexPath: IndexPath, animated: Bool) {
         lensCollectionView.scrollToItem(at: indexPath, at: .centeredHorizontally, animated: true)
         faceImage.image = lensFiltersImages[indexPath.row]
@@ -60,6 +66,11 @@ extension LensViewController: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         let side = lensCollectionView.frame.height * 0.9
         return CGSize(width: side, height: side)
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
+        let side = lensCollectionView.frame.height * 2
+        return UIEdgeInsets(top: 0, left: side, bottom: 0, right: side)
     }
 }
 
