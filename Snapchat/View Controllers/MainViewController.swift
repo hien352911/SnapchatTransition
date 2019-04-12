@@ -99,7 +99,14 @@ extension MainViewController: ScrollViewControllerDelegate {
         let max: CGFloat = scrollViewController.pageSize.width
         let x = scrollViewController.scrollView.contentOffset.x
         let result = ((x - min) / (max - min)) - 1
+        
+        var controller: UIViewController?
+        if scrollViewController.isControllerVisible(chatViewController) {
+            controller = chatViewController
+        } else if scrollViewController.isControllerVisible(discoverViewController) {
+            controller = discoverViewController
+        }
 
-        navigationView.animate(to: result)
+        navigationView.animate(to: controller, percent: result)
     }
 }
